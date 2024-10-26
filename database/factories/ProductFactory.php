@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProductTypeEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +10,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProductFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'type'  => $this->faker->randomElement(ProductTypeEnum::cases()),
+            'name'  => $this->faker->name(),
+            'price' => $this->faker->numberBetween(100, 1000),
+            'photo' => $this->faker->imageUrl(),
         ];
     }
 }
