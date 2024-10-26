@@ -27,4 +27,9 @@ class ClientController extends Controller
 
         return new ClientResource($client);
     }
+
+    public function show(Client $client): ClientResource
+    {
+        return new ClientResource($client);
+    }
 }
