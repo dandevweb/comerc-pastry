@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Response;
 use App\Models\{Order, Product};
+use App\Events\OrderCreatedEvent;
 use App\Http\Requests\OrderRequest;
 use App\Http\Resources\OrderResource;
 use Illuminate\Http\{JsonResponse, Request};
@@ -62,6 +63,9 @@ class OrderController extends Controller
             ]);
 
             $orderSaved->products()->sync($data['products']);
+
+            event(new OrderCreatedEvent($orderSaved));
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

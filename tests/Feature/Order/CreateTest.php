@@ -1,16 +1,18 @@
 <?php
 
-use App\Models\{Client, Product};
-use App\Models\{User};
-use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
+use App\Models\{User};
+use App\Models\{Client, Product};
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
+use App\Notifications\ClientOrderNotification;
 
 use function Pest\Laravel\{actingAs};
 
 beforeEach(function () {
     Storage::fake('public');
     actingAs(User::factory()->create());
+    Notification::fake();
 });
 
 it('creates an order successfully', function () {
@@ -97,4 +99,23 @@ it('fails to create an order with invalid product ID', function () {
 
     $response->assertStatus(422)
              ->assertJsonValidationErrors(['products.1']);
+});
+
+it('sends a notification to the client when a new order is created', function () {
+    $client   = Client::factory()->create();
+    $products = Product::factory()->count(2)->create();
+
+    $orderData = [
+        'client_id' => $client->id,
+        'products'  => $products->pluck('id')->toArray(),
+    ];
+
+    $response = $this->postJson(route('orders.store'), $orderData);
+
+    Notification::assertSentTo($client, ClientOrderNotification::class, function ($notification, $channels) use ($products) {
+        return in_array('mail', $channels) &&
+               $notification->order->products->count() === count($products);
+    });
+
+    $response->assertStatus(201);
 });
