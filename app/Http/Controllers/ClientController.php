@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
+use Illuminate\Http\Response;
 use App\Http\Requests\ClientRequest;
 use App\Http\Resources\ClientResource;
-use App\Models\Client;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request};
 
 class ClientController extends Controller
 {
@@ -38,5 +39,12 @@ class ClientController extends Controller
         $client->update($request->validated());
 
         return new ClientResource($client);
+    }
+
+    public function destroy(Client $client): Response
+    {
+        $client->delete();
+
+        return response()->noContent();
     }
 }
