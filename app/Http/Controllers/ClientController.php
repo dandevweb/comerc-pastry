@@ -4,20 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Response;
-use App\Http\Requests\ClientRequest;
+use App\Http\Requests\{ClientRequest, ListFilterRequest};
 use App\Http\Resources\ClientResource;
-use Illuminate\Http\{Request};
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ClientController extends Controller
 {
-    public function index(Request $request)
+    public function index(ListFilterRequest $request): AnonymousResourceCollection
     {
+        $validatedData = $request->validated();
+        $filter        = $validatedData['filter'] ?? null;
+        $sortBy        = $validatedData['sort_by'] ?? 'name';
+        $sortOrder     = $validatedData['sort_order'] ?? 'asc';
+        $perPage       = $validatedData['per_page'] ?? 10;
+
         $clients = Client::when(
-            $request->name,
-            fn ($query) => $query->where('name', 'like', '%' . $request->name . '%')
+            $filter,
+            fn ($query) => $query->where(
+                fn ($query) => $query
+                    ->where('name', 'like', "%$filter%")
+                    ->orWhere('email', 'like', "%$filter%")
+            )
         )
-        ->when($request->sort, fn ($query) => $query->orderBy($request->sort))
-        ->paginate($request->per_page ?? 10);
+        ->when($sortBy, fn ($query) => $query->orderBy($sortBy, $sortOrder))
+        ->paginate($perPage);
 
         return ClientResource::collection($clients);
     }

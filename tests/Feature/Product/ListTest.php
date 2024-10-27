@@ -17,6 +17,17 @@ it('can list all products', function () {
     $response->assertJsonCount(5, 'data');
 });
 
+it('can filter products by name', function () {
+    Product::factory()->create(['name' => 'Coxinha']);
+    Product::factory()->create(['name' => 'Esfiha']);
+
+    $response = $this->getJson('/api/products?filter=Coxinha');
+
+    $response->assertStatus(200);
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonFragment(['name' => 'Coxinha']);
+});
+
 it('can sort products by price in ascending order', function () {
     Product::factory()->create(['price' => 10.00]);
     Product::factory()->create(['price' => 20.00]);

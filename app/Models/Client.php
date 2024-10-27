@@ -11,6 +11,8 @@ class Client extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $hidden = ['deleted_at'];
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

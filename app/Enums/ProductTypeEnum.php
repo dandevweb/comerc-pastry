@@ -8,7 +8,7 @@ enum ProductTypeEnum: int
     case sweet = 2;
     case drink = 3;
 
-    public static function getTypeName(int $type): string
+    public static function getDescription(int $type): string
     {
         return match ($type) {
             self::salty->value => 'Salgados',

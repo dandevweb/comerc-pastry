@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\{ListFilterRequest, ProductRequest};
 use Storage;
 use App\Models\Product;
-use Illuminate\Http\{Request, Response};
-use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use Illuminate\Http\{Response};
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index(ListFilterRequest $request): AnonymousResourceCollection
     {
-        $request->validate([
-            'name'       => ['nullable', 'string'],
-            'sort_by'    => ['nullable', 'string'],
-            'sort_order' => ['nullable', 'string'],
-        ]);
+
+        $validatedData = $request->validated();
+        $filter        = $validatedData['filter'] ?? null;
+        $sortBy        = $validatedData['sort_by'] ?? 'name';
+        $sortOrder     = $validatedData['sort_order'] ?? 'asc';
+        $perPage       = $validatedData['per_page'] ?? 10;
 
         $products = Product::when(
-            $request->name,
-            fn ($query) => $query->where('name', 'like', '%' . $request->name . '%')
+            $filter,
+            fn ($query) => $query->where('name', 'like', "%$filter%")
         )
-        ->when($request->sort_by, fn ($query) => $query->orderBy($request->sort_by, $request->sort_order ?? 'asc'))
-        ->paginate($request->per_page ?? 10);
+        ->when($sortBy, fn ($query) => $query->orderBy($sortBy, $sortOrder))
+        ->paginate($perPage);
 
         return ProductResource::collection($products);
     }

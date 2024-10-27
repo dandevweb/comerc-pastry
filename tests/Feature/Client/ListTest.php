@@ -23,11 +23,22 @@ it('can filter clients by name', function () {
     Client::factory()->create(['name' => 'Alice']);
     Client::factory()->create(['name' => 'Bob']);
 
-    $response = $this->getJson('/api/clients?name=Alice');
+    $response = $this->getJson('/api/clients?filter=Alice');
 
     $response->assertStatus(200);
     $response->assertJsonCount(1, 'data');
     $response->assertJsonFragment(['name' => 'Alice']);
+});
+
+it('can filter clients by email', function () {
+    Client::factory()->create(['email' => 'alice@example.com']);
+    Client::factory()->create(['email' => 'bob@example.com']);
+
+    $response = $this->getJson('/api/clients?filter=alice@example.com');
+
+    $response->assertStatus(200);
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonFragment(['email' => 'alice@example.com']);
 });
 
 it('can paginate clients', function () {

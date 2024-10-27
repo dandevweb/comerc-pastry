@@ -33,8 +33,9 @@ it('can update a product successfully', function () {
             'id'   => $product->id,
             'name' => $updatedData['name'],
             'type' => [
-                'value' => $updatedData['type']->value,
-                'name'  => $updatedData['type']->name,
+                'value'       => $updatedData['type']->value,
+                'name'        => $updatedData['type']->name,
+                'description' => $updatedData['type'] ? ProductTypeEnum::getDescription($updatedData['type']->value) : null,
             ],
             'price' => $updatedData['price'],
             'photo' => $updatedData['photo'],
