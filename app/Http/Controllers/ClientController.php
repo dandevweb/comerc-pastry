@@ -4,39 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Response;
-use App\Http\Requests\{ClientRequest, ListFilterRequest};
+use App\Services\ClientService;
 use App\Http\Resources\ClientResource;
+use App\Http\Requests\{ClientRequest, ListFilterRequest};
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ClientController extends Controller
 {
+    public function __construct(private ClientService $clientService)
+    {
+    }
+
     public function index(ListFilterRequest $request): AnonymousResourceCollection
     {
-        $validatedData = $request->validated();
-        $filter        = $validatedData['filter'] ?? null;
-        $sortBy        = $validatedData['sort_by'] ?? 'name';
-        $sortOrder     = $validatedData['sort_order'] ?? 'asc';
-        $perPage       = $validatedData['per_page'] ?? 10;
-
-        $clients = Client::when(
-            $filter,
-            fn ($query) => $query->where(
-                fn ($query) => $query
-                    ->where('name', 'like', "%$filter%")
-                    ->orWhere('email', 'like', "%$filter%")
-            )
-        )
-        ->when($sortBy, fn ($query) => $query->orderBy($sortBy, $sortOrder))
-        ->paginate($perPage);
-
-        return ClientResource::collection($clients);
+        return ClientResource::collection($this->clientService->list($request->validated()));
     }
 
     public function store(ClientRequest $request): ClientResource
     {
-        $client = Client::create($request->validated());
-
-        return new ClientResource($client);
+        return new ClientResource($this->clientService->create($request->validated()));
     }
 
     public function show(Client $client): ClientResource
@@ -46,9 +32,7 @@ class ClientController extends Controller
 
     public function update(Client $client, ClientRequest $request): ClientResource
     {
-        $client->update($request->validated());
-
-        return new ClientResource($client);
+        return new ClientResource($this->clientService->update($client, $request->validated()));
     }
 
     public function destroy(Client $client): Response
