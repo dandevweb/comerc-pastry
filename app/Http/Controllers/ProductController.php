@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Storage;
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Http\{Request, Response};
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
-use Storage;
 
 class ProductController extends Controller
 {
@@ -57,5 +57,12 @@ class ProductController extends Controller
         $product->update($data);
 
         return new ProductResource($product->fresh());
+    }
+
+    public function destroy(Product $product): Response
+    {
+        $product->delete();
+
+        return response()->noContent();
     }
 }
