@@ -2,43 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\{ListFilterRequest, ProductRequest};
-use Storage;
 use App\Models\Product;
-use App\Http\Resources\ProductResource;
 use Illuminate\Http\{Response};
+use App\Services\ProductService;
+use App\Http\Resources\ProductResource;
+use App\Http\Requests\{ListFilterRequest, ProductRequest};
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends Controller
 {
+    public function __construct(private ProductService $productService)
+    {
+    }
+
     public function index(ListFilterRequest $request): AnonymousResourceCollection
     {
-
-        $validatedData = $request->validated();
-        $filter        = $validatedData['filter'] ?? null;
-        $sortBy        = $validatedData['sort_by'] ?? 'name';
-        $sortOrder     = $validatedData['sort_order'] ?? 'asc';
-        $perPage       = $validatedData['per_page'] ?? 10;
-
-        $products = Product::when(
-            $filter,
-            fn ($query) => $query->where('name', 'like', "%$filter%")
-        )
-        ->when($sortBy, fn ($query) => $query->orderBy($sortBy, $sortOrder))
-        ->paginate($perPage);
-
-        return ProductResource::collection($products);
+        return ProductResource::collection($this->productService->list($request->validated()));
     }
 
     public function store(ProductRequest $request): ProductResource
     {
-        $data = $request->validated();
-
-        $data['photo'] = Storage::putFile('products', $data['photo']);
-
-        $product = Product::create($data);
-
-        return new ProductResource($product);
+        return new ProductResource($this->productService->create($request->validated()));
     }
 
     public function show(Product $product): ProductResource
@@ -48,17 +32,7 @@ class ProductController extends Controller
 
     public function update(Product $product, ProductRequest $request): ProductResource
     {
-        $data = $request->validated();
-
-        $data['photo'] = Storage::putFile('products', $data['photo']);
-
-        if ($product->photo) {
-            Storage::delete($product->photo);
-        }
-
-        $product->update($data);
-
-        return new ProductResource($product->fresh());
+        return new ProductResource($this->productService->update($product, $request->validated()));
     }
 
     public function destroy(Product $product): Response
