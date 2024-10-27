@@ -43,4 +43,19 @@ class ProductController extends Controller
     {
         return new ProductResource($product);
     }
+
+    public function update(Product $product, ProductRequest $request): ProductResource
+    {
+        $data = $request->validated();
+
+        $data['photo'] = Storage::putFile('products', $data['photo']);
+
+        if ($product->photo) {
+            Storage::delete($product->photo);
+        }
+
+        $product->update($data);
+
+        return new ProductResource($product->fresh());
+    }
 }

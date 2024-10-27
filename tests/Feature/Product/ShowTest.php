@@ -10,7 +10,7 @@ beforeEach(function () {
 });
 
 it('can retrieve a product by id', function () {
-    $product = Product::factory()->create(['name' => 'Alice', 'price' => 10.00, 'type' => ProductTypeEnum::salty]);
+    $product = Product::factory()->create(['name' => 'Pastel de frango', 'price' => 10.00, 'type' => ProductTypeEnum::salty]);
 
     $response = $this->getJson(route('products.show', $product));
 
@@ -18,7 +18,7 @@ it('can retrieve a product by id', function () {
     $response->assertJson([
         'data' => [
             'id'   => $product->id,
-            'name' => 'Alice',
+            'name' => 'Pastel de frango',
             'type' => [
                 'value' => ProductTypeEnum::salty->value,
                 'name'  => ProductTypeEnum::salty->name,
