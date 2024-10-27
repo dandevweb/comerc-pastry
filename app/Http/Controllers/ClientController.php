@@ -32,4 +32,11 @@ class ClientController extends Controller
     {
         return new ClientResource($client);
     }
+
+    public function update(Client $client, ClientRequest $request): ClientResource
+    {
+        $client->update($request->validated());
+
+        return new ClientResource($client);
+    }
 }

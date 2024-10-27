@@ -24,7 +24,7 @@ it('can retrieve a client by id', function () {
 });
 
 it('returns a 404 error if the client does not exist', function () {
-    $response = $this->getJson('/api/clients/999'); // ID que não existe
+    $response = $this->getJson(route('clients.show', 999));
 
     $response->assertStatus(404);
 
