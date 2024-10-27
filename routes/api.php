@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
+use AliReaza\Laravel\Request\Middleware\FormData;
 use App\Http\Controllers\{ClientController, ProductController};
 use App\Http\Controllers\Auth\{LoginController, RegisterController};
 use App\Http\Controllers\Auth\{RecoveryPasswordController, ResetPasswordController};
@@ -12,5 +14,6 @@ Route::put('password-reset', ResetPasswordController::class)->name('password.res
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('clients', ClientController::class);
-    Route::apiResource('products', ProductController::class);
+    Route::apiResource('products', ProductController::class)->middleware(FormData::class); // to resolve PUT error with form data;
+    Route::apiResource('orders', OrderController::class);
 });
