@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
+use Storage;
 
 class ProductController extends Controller
 {
@@ -24,5 +26,16 @@ class ProductController extends Controller
         ->paginate($request->per_page ?? 10);
 
         return ProductResource::collection($products);
+    }
+
+    public function store(ProductRequest $request): ProductResource
+    {
+        $data = $request->validated();
+
+        $data['photo'] = Storage::putFile('products', $data['photo']);
+
+        $product = Product::create($data);
+
+        return new ProductResource($product);
     }
 }

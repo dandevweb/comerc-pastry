@@ -25,7 +25,7 @@ class Product extends Model
     public function price(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $value ? $value / 100 : 0,
+            get: fn ($value) => $value ? number_format($value / 100, 2, '.', '') : 0,
             set: fn ($value) => $value ? $value * 100 : 0,
         );
     }
