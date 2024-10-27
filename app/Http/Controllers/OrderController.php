@@ -43,4 +43,11 @@ class OrderController extends Controller
 
         return new OrderResource($order);
     }
+
+    public function show(Order $order): OrderResource
+    {
+        $order->load('products', 'client');
+
+        return new OrderResource($order);
+    }
 }
