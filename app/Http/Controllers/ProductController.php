@@ -41,4 +41,9 @@ class ProductController extends Controller
 
         return response()->noContent();
     }
+
+    public function listToSelect(ListFilterRequest $request): AnonymousResourceCollection
+    {
+        return ProductResource::collection($this->productService->list(['columns' => ['id', 'name'], ...$request->validated()]));
+    }
 }

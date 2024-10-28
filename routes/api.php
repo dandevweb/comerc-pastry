@@ -13,7 +13,11 @@ Route::post('password-recovery', RecoveryPasswordController::class)->name('passw
 Route::put('password-reset', ResetPasswordController::class)->name('password.reset');
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('clients-list', [ClientController::class, 'listToSelect'])->name('clients.list');
     Route::apiResource('clients', ClientController::class);
+
+    Route::get('products-list', [ProductController::class, 'listToSelect'])->name('products.list');
     Route::apiResource('products', ProductController::class)->middleware(FormData::class); // to resolve PUT error with form data;
     Route::apiResource('orders', OrderController::class);
 });

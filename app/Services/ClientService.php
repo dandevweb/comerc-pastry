@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Client;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClientService
 {
-    public function list(array $filters): LengthAwarePaginator
+    public function list(array $filters): LengthAwarePaginator|Collection
     {
         $filter    = $filters['filter'] ?? null;
         $sortBy    = $filters['sort_by'] ?? 'name';
         $sortOrder = $filters['sort_order'] ?? 'asc';
         $perPage   = $filters['per_page'] ?? 10;
+        $columns   = $filters['columns'] ?? null;
 
         return Client::when(
             $filter,
@@ -25,7 +27,12 @@ class ClientService
             )
         )
         ->when($sortBy, fn ($query) => $query->orderBy($sortBy, $sortOrder))
-        ->paginate($perPage);
+        ->when(
+            $columns,
+            fn ($query) => $query->select($columns)->get(),
+            fn ($query) => $query->paginate($perPage)
+        );
+
     }
 
     public function create(array $data): Client

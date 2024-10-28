@@ -13,14 +13,14 @@ class ProductResource extends JsonResource
         return [
             'id'   => $this->id ?? null,
             'name' => $this->name ?? null,
-            'type' => isset($this->type) ? [
+            'type' => $this->when(isset($this->type), [
                 'value'       => $this->type->value ?? null,
                 'name'        => $this->type->name ?? null,
-                'description' => $this->type ? ProductTypeEnum::getDescription($this->type->value) : null,
-            ] : null,
-            'price'      => $this->price ?? null,
-            'photo'      => $this->photo ?? null,
-            'photo_path' => $this->photoPath ?? null,
+                'description' => $this->type ?? null ? ProductTypeEnum::getDescription($this->type->value ?? null) : null,
+            ]),
+            'price'      => $this->when($this->price ?? null, $this->price ?? 0),
+            'photo'      => $this->when($this->photo ?? null, $this->photo ?? null),
+            'photo_path' => $this->when($this->photo ?? null, $this->photoPath ?? null),
         ];
     }
 }

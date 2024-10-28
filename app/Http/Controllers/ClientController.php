@@ -41,4 +41,9 @@ class ClientController extends Controller
 
         return response()->noContent();
     }
+
+    public function listToSelect(ListFilterRequest $request): AnonymousResourceCollection
+    {
+        return ClientResource::collection($this->clientService->list(['columns' => ['id', 'name'], ...$request->validated()]));
+    }
 }
