@@ -2,7 +2,7 @@
 
 Este projeto é uma aplicação desenvolvida em Laravel para gerenciar uma pastelaria. O sistema permite realizar operações CRUDL (Criar, Ler, Listar, Atualizar e Deletar) em clientes, produtos e pedidos, com suporte para busca, filtragem e paginação.
 
-Para detalhes sobre como usar os endpoints, consulte a [DOCUMENTAÇÃO DA API](https://documenter.getpostman.com/).
+Para detalhes sobre como usar os endpoints, consulte a [DOCUMENTAÇÃO DA API](https://documenter.getpostman.com/view/22300616/2sAY4uC3Sf).
 
 ## Tecnologias utilizadas
 
@@ -107,4 +107,4 @@ sail test
 
 -   **Husky**: Utilizamos a ferramenta Husky como uma dependência de desenvolvimento para automatizar a execução de testes, realizar análise estática e formatar o código em cada commit realizado. Isso garante que o código mantenha um padrão de qualidade e esteja sempre funcional.
 
--   **Documentação da API**: Para mais informações sobre como utilizar a API, siga a [Documentação da API](https://documenter.getpostman.com/). Lembre-se de alterar a URL base para `http://localhost` para testes locais.
+-   **Documentação da API**: Para mais informações sobre como utilizar a API, siga a [Documentação da API](https://documenter.getpostman.com/view/22300616/2sAY4uC3Sf). Lembre-se de alterar a URL base para `http://localhost` para testes locais.
