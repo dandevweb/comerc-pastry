@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f553491f6630fdf44ebcf53d32b2247",
+    "content-hash": "cd1ec53bcf6997246d6c9250b29db7e6",
     "packages": [
         {
             "name": "alireaza/laravel-form-data",
