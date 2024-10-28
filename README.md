@@ -86,6 +86,10 @@ Acesse o projeto em:
 
     - http://localhost
 
+Acesse o serviço de e-mail em:
+
+    - http://localhost:8025
+
 ## Testes
 
 Para rodar os testes, execute o comando:
